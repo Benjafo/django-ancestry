@@ -1,10 +1,11 @@
+import os
 import stripe
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from .models import Product
 
-stripe.api_key = 'sk_test_51PxYt9KsX8iFIbQ65B3pDup2ufCUCBadwMWw5PwUN4uydWjxgyLaGkLs07HGhYe6OJosqLGAAZOuPCcjo4Bs3yKH001aaa8jRU'
-DOMAIN = 'http://localhost:8000/api/portal'
+stripe.api_key = os.environ.get('STRIPE_API_KEY')
+PORTAL_DOMAIN = os.environ.get('PORTAL_DOMAIN')
 
 # Create your views here.
 def create_checkout_session(request, product_id, quantity=1):
@@ -18,8 +19,8 @@ def create_checkout_session(request, product_id, quantity=1):
                 }
             ],
             mode='payment',
-            success_url=f'{DOMAIN}/success.html',
-            cancel_url=f'{DOMAIN}/cancel.html'
+            success_url=f'{PORTAL_DOMAIN}/success.html',
+            cancel_url=f'{PORTAL_DOMAIN}/cancel.html'
         )
     except Exception as e:
         return HttpResponse(str(e), status=400)
