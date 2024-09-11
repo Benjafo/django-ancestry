@@ -1,0 +1,19 @@
+<strong>{{ person.name }}</strong>
+<p>
+    Birth: {{ person.birth_date }}
+</p>
+{% if person.death_date %}
+    <p>
+        Death: {{ person.death_date }}
+    </p>
+{% endif %}
+{% for event in person.events.all %}
+    <p>
+        {{ event.type }}: {{ event.date }}
+    </p>
+{% endfor %}
+{% for evesourcent in person.sources.all %}
+    <p>
+        {{ source.name }}
+    </p>
+{% endfor %}

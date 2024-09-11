@@ -1,0 +1,14 @@
+{% if trees %}
+    <strong>Trees</strong>
+    <ul>
+        {% for tree in trees %}
+            <li>
+                <a href="{% url 'api:tree' tree.id %}">
+                    {{ tree.name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No trees available.</p>
+{% endif %}

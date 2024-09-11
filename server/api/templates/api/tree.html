@@ -1,0 +1,10 @@
+<strong>{{ tree.name }}</strong>
+<ul>
+    {% for person in tree.members.all %}
+        <li>
+            <a href="{% url 'api:person' person.id %}">
+                {{ person.name }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>

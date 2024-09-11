@@ -1,0 +1,405 @@
+openapi: '3.0.3'
+info:
+  title: pyNeo4j
+  version: '1.0'
+  description: |
+    This API provides access to family tree data stored in a Neo4j database accessed through python.
+    It allows for creation, retrieval, updating, and deletion of family trees and their members.
+servers:
+  - url: /api/v1
+    description: Version 1 of the API
+paths:
+  /trees:
+    get:
+      summary: List all trees
+      operationId: listTrees
+      tags:
+        - trees
+      responses:
+        '200':
+          description: An array of trees
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trees'
+              example:
+                [
+                  {
+                    id: 1,
+                    name: "Appleburger"
+                  },
+                  {
+                    id: 2,
+                    name: "Dingleberry"
+                  }
+                ]
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+    post:
+      summary: Create a tree
+      operationId: createTrees
+      tags:
+        - trees
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tree'
+            example:
+              {
+                name: "Jones"
+              }
+        required: true
+      responses:
+        '201':
+          description: Tree successfully created
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+  /tree/{id}:
+    get:
+      summary: Info for a specific tree
+      operationId: listTreeById
+      tags:
+        - trees
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Tree successfully retreived
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tree'
+              example:
+                {
+                  id: 1,
+                  name: 'Appleburger',
+                  members: [
+                    {
+                      name: 'Dave Appleburger',
+                      birth_date: '02-02-1950'
+                    },
+                    {
+                      name: 'Jim Appleburger',
+                      birth_date: '11-02-1951',
+                      death_date: '06-12-2020'
+                    },
+                    {
+                      name: 'Pamela McGilligan',
+                      birth_date: '07-25-1926'
+                    }
+                  ]
+                }
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+    put:
+      summary: Modify a tree
+      operationId: modifyTreeById
+      tags:
+        - trees
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tree'
+        required: true
+      responses:
+        '200':
+          description: Tree successfully modified
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+    delete:
+      summary: Delete a tree
+      operationId: deleteTreeById
+      tags:
+        - trees
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '204':
+          description: Tree successfully deleted
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+  /person/{id}:
+    get:
+      summary: Info for a specific person
+      operationId: listPersonById
+      tags:
+        - people
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Person successfully retreived
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+              example:
+                {
+                  id: 1,
+                  name: 'Dave Appleburger',
+                  birth_date: '02-02-1950',
+                  sources: [
+                    {
+                      id: 77,
+                      name: '1950 U.S Federal Census',
+                      type: 'document',
+                      filepath: '/path/to/census.pdf'
+                    }
+                  ],
+                  events: [
+                    {
+                      id: 20,
+                      date: '02-02-1950',
+                      location: 'North Pole',
+                      type: 'Birth'
+                    },
+                    {
+                      id: 21,
+                      date: '12-15-1979',
+                      location: 'Bosnia and Herzegovina',
+                      type: 'Marriage'
+                    },
+                  ]
+                }
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+    put:
+      summary: Modify a person
+      operationId: modifyPersonById
+      tags:
+        - people
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Person'
+        required: true
+      responses:
+        '200':
+          description: Person successfully modified
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+    delete:
+      summary: Delete a person
+      operationId: deletePersonById
+      tags:
+        - people
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '204':
+          description: Person successfully deleted
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+components:
+  parameters:
+    id:
+      name: id
+      in: path
+      required: true
+      description: The id of the resource to retrieve
+      schema:
+        type: integer
+  responses:
+    BadRequestError:
+      description: Invalid request body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnauthorizedError:
+      description: User is not authenticated
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ForbiddenError:
+      description: User lacks permission to view this resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalServerError:
+      description: Unexpected internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnexpectedError:
+      description: unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Source:
+      type: object
+      required:
+        - id
+        - name
+        - type
+        - filepath
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        type:
+          type: string
+          enum: [document, photo, video, audio]
+        filepath:
+          type: string
+    Event:
+      type: object
+      required:
+        - id
+        - date
+        - location
+        - type
+      properties:
+        id:
+          type: integer
+        date:
+          type: string
+        location:
+          type: string
+        type:
+          type: string
+    Person:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        birth_date:
+          type: string
+        death_date:
+          type: string
+        sources:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/Source'
+        events:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/Event'
+    Tree:
+      type: object
+      required:
+        - id
+        - name
+        - members
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        members:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/Person'
+    Trees:
+      type: array
+      uniqueItems: true
+      maxItems: 20
+      items:
+        $ref: '#/components/schemas/Tree'
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
